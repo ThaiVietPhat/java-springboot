@@ -1,0 +1,29 @@
+<a th:href="@{/user/new}">New</a>
+<form th:action="@{/user/list}" method="get">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm tên...">
+    <button type="submit">Search</button>
+</form>
+
+<table border="1">
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>old</th>
+		<th>delete</th>
+		<th>edit</th>
+    </tr>
+    <tr th:each="u:${userList}">
+        <td th:text="${u.id}"></td>
+        <td th:text="${u.name}"></td>
+        <td th:text="${u.old}"></td>
+		<td>
+			<form th:action="@{/user/delete/{id}(id=${u.id})}" method="post">
+				<button type="submit">Delete</button>
+			</form>
+		</td>
+		<td>
+			<a th:href="@{/user/edit/{id}(id=${u.id})}">edit</a>
+		</td>
+    </tr>
+
+</table>
