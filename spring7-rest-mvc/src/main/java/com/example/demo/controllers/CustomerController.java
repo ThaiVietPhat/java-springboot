@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.model.Customer;
+import com.example.demo.model.CustomerDTO;
 import com.example.demo.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PatchMapping(CUSTOMER_PATH_ID)
-    public ResponseEntity updatePatchById(@PathVariable UUID customerId, @RequestBody Customer customer){
+    public ResponseEntity updatePatchById(@PathVariable UUID customerId, @RequestBody CustomerDTO customer){
         customerService.updatePatchById(customerId, customer);
         return ResponseEntity.noContent().build();
     }
@@ -31,23 +31,23 @@ public class CustomerController {
         return ResponseEntity.noContent().build();
     }
     @PutMapping(CUSTOMER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable UUID customerId, @RequestBody Customer customer){
+    public ResponseEntity updateById(@PathVariable UUID customerId, @RequestBody CustomerDTO customer){
         customerService.updateCustomerById(customerId,customer);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(CUSTOMER_PATH)
-    public ResponseEntity handlePost(@RequestBody Customer customer){
-        Customer savedCustomer = customerService.saveNewCustomer(customer);
+    public ResponseEntity handlePost(@RequestBody CustomerDTO customer){
+        CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
         return ResponseEntity.created(URI.create(CUSTOMER_PATH + "/" + savedCustomer.getId())).build();
     }
     @GetMapping(CUSTOMER_PATH)
-    public List<Customer> listCustomers(){
-        log.debug("List Customers - in controller");
+    public List<CustomerDTO> listCustomers(){
         return customerService.listCustomers();
     }
+
     @GetMapping(CUSTOMER_PATH_ID)
-    public Customer getCustomerId(@PathVariable("customerId") UUID customerId){
+    public CustomerDTO getCustomerId(@PathVariable("customerId") UUID customerId){
         log.debug("Get Customer by Id - in controller");
         return customerService.getCustomerById(customerId);
     }
