@@ -15,20 +15,15 @@ import java.util.UUID;
 public class BeerDTO {
 	private UUID id;
 	private Integer version;
-
 	@NotBlank
 	@Size(max = 50)
 	private String beerName;
-
 	@NotNull
 	private BeerStyle beerStyle;
-
 	@NotBlank
 	@Size(max = 255)
 	private String upc;
-
 	private Integer quantityOnHand;
-
 	@NotNull
 	private BigDecimal price;
 	private LocalDateTime createdDate;

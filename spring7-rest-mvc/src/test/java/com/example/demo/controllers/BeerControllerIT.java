@@ -47,21 +47,6 @@ class BeerControllerIT {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
     @Test
-    void testPatchBeerNoName() throws Exception {
-        Beer beer= beerRepository.findAll().get(0);
-        String oldName = beer.getBeerName();
-        Map<String, Object> beerMap= new HashMap<>();
-        // Không đưa beerName vào map, hoặc đưa vào null
-        beerMap.put("price", 12.99);
-
-        mockMvc.perform(patch(BeerController.BEER_PATH_ID, beer.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(beerMap)))
-                .andExpect(status().isBadRequest()); // Kỳ vọng 400 vì @Valid đã bật
-    }
-
-    @Test
     void testPatchBeerBadName() throws Exception {
         Beer beer= beerRepository.findAll().get(0);
         Map<String, Object> beerMap= new HashMap<>();
@@ -71,7 +56,7 @@ class BeerControllerIT {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beerMap)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()").value(4))
+                .andExpect(jsonPath("$.length()").value(1))
                 .andReturn();
         System.out.println(result.getResponse().getContentAsString());
 

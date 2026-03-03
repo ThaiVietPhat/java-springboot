@@ -22,7 +22,7 @@ public class BeerController {
 	private final BeerService beerService;
 
 	@PatchMapping(BEER_PATH_ID)
-	public ResponseEntity updateBeerPatchById( @PathVariable UUID beerId, @Valid @RequestBody BeerDTO beer){
+	public ResponseEntity updateBeerPatchById( @PathVariable UUID beerId,  @RequestBody BeerDTO beer){
 		beerService.beerPatchById(beerId,beer);
 		return ResponseEntity.noContent().build();
 	}

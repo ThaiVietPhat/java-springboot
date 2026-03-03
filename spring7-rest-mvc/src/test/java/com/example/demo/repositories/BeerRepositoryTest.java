@@ -16,7 +16,7 @@ class BeerRepositoryTest {
         @Test
         void testSaveBeer(){
             Beer savedBeer = beerRepository.save(Beer.builder()
-                    .beerName(" sds")
+                    .beerName(" s")
                     .beerStyle(BeerStyle.PALE_ALE)
                     .upc("12356")
                     .price(new BigDecimal("12.99"))
