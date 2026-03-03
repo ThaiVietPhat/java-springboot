@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.model.BeerDTO;
 import com.example.demo.services.BeerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +22,25 @@ public class BeerController {
 	private final BeerService beerService;
 
 	@PatchMapping(BEER_PATH_ID)
-	public ResponseEntity updateBeerPatchById(@PathVariable UUID beerId, @RequestBody BeerDTO beer){
+	public ResponseEntity updateBeerPatchById( @PathVariable UUID beerId, @Valid @RequestBody BeerDTO beer){
 		beerService.beerPatchById(beerId,beer);
 		return ResponseEntity.noContent().build();
 	}
 	@DeleteMapping(BEER_PATH_ID)
 	public ResponseEntity deleteById(@PathVariable UUID beerId){
-		beerService.deleteBeerById(beerId);
+		if (! beerService.deleteBeerById(beerId)){
+			throw new NotFoundException();
+		}
+
 		return ResponseEntity.noContent().build();
 	}
 	@PutMapping(BEER_PATH_ID)
-	public ResponseEntity updateById(@PathVariable UUID beerId,@RequestBody BeerDTO beer){
-		if(beerService.updateBeerById(beerId,beer).isEmpty()){
-			throw new NotFoundException();
-		}
+	public ResponseEntity updateById( @PathVariable UUID beerId, @Valid @RequestBody BeerDTO beer){
+		beerService.updateBeerById(beerId,beer).orElseThrow(NotFoundException::new);
 		return ResponseEntity.noContent().build();
 	}
 	@PostMapping(BEER_PATH)
-	public ResponseEntity handlePost(@RequestBody BeerDTO beer){
+	public ResponseEntity handlePost(@Valid @RequestBody BeerDTO beer){
 		BeerDTO savedBeer = beerService.saveNewBeer(beer);
 		return ResponseEntity.created(URI.create(BEER_PATH + "/" + savedBeer.getId().toString())).build();
 	}

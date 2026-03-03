@@ -1,18 +1,17 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.Beer;
 import com.example.demo.mappers.BeerMapper;
 import com.example.demo.model.BeerDTO;
 import com.example.demo.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Service
 @Primary
@@ -25,12 +24,13 @@ public class BeerServiceJPA implements BeerService{
         return beerRepository.findAll()
                 .stream()
                 .map(beerMapper::beerToBeerDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
-        return Optional.ofNullable(beerMapper.beerToBeerDTO(beerRepository.findById(id).orElse(null)));
+        return beerRepository.findById(id)
+                .map(beerMapper::beerToBeerDTO);
     }
 
     @Override
@@ -41,30 +41,47 @@ public class BeerServiceJPA implements BeerService{
 
     @Override
     public Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beer) {
-        AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
-
-        beerRepository.findById(beerId).ifPresentOrElse(foundBeer -> {
+        return beerRepository.findById(beerId).map(foundBeer -> {
             foundBeer.setBeerName(beer.getBeerName());
             foundBeer.setPrice(beer.getPrice());
             foundBeer.setUpc(beer.getUpc());
             foundBeer.setBeerStyle(beer.getBeerStyle());
-
-            Beer savedBeer = beerRepository.save(foundBeer);
-            atomicReference.set(Optional.of(beerMapper.beerToBeerDTO(savedBeer)));
-        }, () -> {
-            atomicReference.set(Optional.empty());
+            foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            foundBeer.setUpdatedDate(LocalDateTime.now());
+            return beerMapper.beerToBeerDTO(beerRepository.save(foundBeer));
         });
 
-        return atomicReference.get();
     }
 
     @Override
-    public void beerPatchById(UUID beerId, BeerDTO beer) {
-
+    public Optional<BeerDTO> beerPatchById(UUID beerId, BeerDTO beer) {
+        return beerRepository.findById(beerId).map(foundBeer -> {
+            if(StringUtils.hasText(beer.getBeerName())){
+                foundBeer.setBeerName(beer.getBeerName());
+            }
+            if(beer.getBeerStyle() != null){
+                foundBeer.setBeerStyle(beer.getBeerStyle());
+            }
+            if(beer.getPrice() != null){
+                foundBeer.setPrice(beer.getPrice());
+            }
+            if(StringUtils.hasText(beer.getUpc())){
+                foundBeer.setUpc(beer.getUpc());
+            }
+            if (beer.getQuantityOnHand() != null){
+                foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            }
+            foundBeer.setUpdatedDate(LocalDateTime.now());
+            return beerMapper.beerToBeerDTO(beerRepository.save(foundBeer));
+        });
     }
 
     @Override
-    public void deleteBeerById(UUID beerId) {
-
+    public boolean deleteBeerById(UUID beerId) {
+        if (beerRepository.existsById(beerId)) {
+            beerRepository.deleteById(beerId);
+            return true;
+        }
+        return false;
     }
 }

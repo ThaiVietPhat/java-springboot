@@ -12,10 +12,11 @@ import java.util.*;
 
 @Slf4j
 @Service
+
 public class BeerServiceImpl implements BeerService {
 
     private Map<UUID, BeerDTO> beerMap;
-    
+
 
     public BeerServiceImpl() {
         this.beerMap = new HashMap<>();
@@ -60,7 +61,7 @@ public class BeerServiceImpl implements BeerService {
         beerMap.put(beer2.getId(), beer2);
         beerMap.put(beer3.getId(), beer3);
     }
-   
+
 	@Override
 	public List<BeerDTO> listBeers() {
 		log.debug("Listing all beers - in service");
@@ -104,12 +105,13 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public void deleteBeerById(UUID beerId) {
+    public boolean deleteBeerById(UUID beerId) {
         beerMap.remove(beerId);
+        return true;
     }
 
     @Override
-    public void beerPatchById(UUID beerId, BeerDTO beer) {
+    public Optional<BeerDTO> beerPatchById(UUID beerId, BeerDTO beer) {
         BeerDTO existing = beerMap.get(beerId);
         if(StringUtils.hasText(beer.getBeerName())){
             existing.setBeerName(beer.getBeerName());
@@ -126,7 +128,7 @@ public class BeerServiceImpl implements BeerService {
         if(StringUtils.hasText(beer.getUpc())){
             existing.setUpc(beer.getUpc());
         }
-        beerMap.put(existing.getId(), existing);
+        return Optional.of(existing);
     }
 
 

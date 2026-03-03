@@ -27,12 +27,14 @@ public class CustomerController {
     }
     @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable UUID customerId){
-        customerService.deleteCustomerById(customerId);
+        if (! customerService.deleteCustomerById(customerId)){
+            throw new NotFoundException();
+        }
         return ResponseEntity.noContent().build();
     }
     @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity updateById(@PathVariable UUID customerId, @RequestBody CustomerDTO customer){
-        customerService.updateCustomerById(customerId,customer);
+        customerService.updateCustomerById(customerId,customer).orElseThrow(NotFoundException::new);
         return ResponseEntity.noContent().build();
     }
 
@@ -49,6 +51,6 @@ public class CustomerController {
     @GetMapping(CUSTOMER_PATH_ID)
     public CustomerDTO getCustomerId(@PathVariable("customerId") UUID customerId){
         log.debug("Get Customer by Id - in controller");
-        return customerService.getCustomerById(customerId);
+        return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
     }
 }

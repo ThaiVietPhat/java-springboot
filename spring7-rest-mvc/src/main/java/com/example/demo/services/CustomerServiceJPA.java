@@ -6,8 +6,11 @@ import com.example.demo.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 @Service
 @Primary
@@ -24,27 +27,46 @@ public class CustomerServiceJPA implements CustomerService{
     }
 
     @Override
-    public CustomerDTO getCustomerById(UUID id) {
-        return null;
+    public Optional<CustomerDTO> getCustomerById(UUID id) {
+        return customerRepository.findById(id)
+                .map(customerMapper::customerToCustomerDTO);
     }
 
     @Override
     public CustomerDTO saveNewCustomer(CustomerDTO customer) {
-        return null;
+       return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerDTOToCustomer(customer)));
     }
 
     @Override
-    public void updateCustomerById(UUID customerId, CustomerDTO customer) {
-
+    public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customerDTO) {
+        return customerRepository.findById(customerId)
+                .map(foundCustomer -> {
+                    foundCustomer.setCustomerName(customerDTO.getCustomerName());
+                    foundCustomer.setLastModifiedDate(LocalDateTime.now());
+                    return customerMapper.customerToCustomerDTO(customerRepository.save(foundCustomer));
+                });
     }
 
     @Override
-    public void deleteCustomerById(UUID customerId) {
-
+    public boolean deleteCustomerById(UUID customerId) {
+        if(customerRepository.existsById(customerId)){
+            customerRepository.deleteById(customerId);
+            return true;
+        }return false;
     }
 
     @Override
-    public void updatePatchById(UUID customerId, CustomerDTO customer) {
-
+    public Optional<CustomerDTO> updatePatchById(UUID customerId, CustomerDTO customer) {
+        return customerRepository.findById(customerId)
+                .map(foundCustomer -> {
+                    if(StringUtils.hasText(customer.getCustomerName())){
+                        foundCustomer.setCustomerName(customer.getCustomerName());
+                    }
+                    if (customer.getCustomerEmail() != null){
+                        foundCustomer.setCustomerEmail(customer.getCustomerEmail());
+                    }
+                    foundCustomer.setLastModifiedDate(LocalDateTime.now());
+                    return customerMapper.customerToCustomerDTO(customerRepository.save(foundCustomer));
+                });
     }
 }
