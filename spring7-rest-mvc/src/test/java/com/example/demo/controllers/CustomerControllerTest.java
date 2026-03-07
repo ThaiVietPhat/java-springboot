@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.model.CustomerDTO;
+import com.example.demo.models.CustomerDTO;
 import com.example.demo.services.CustomerService;
 import com.example.demo.services.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;

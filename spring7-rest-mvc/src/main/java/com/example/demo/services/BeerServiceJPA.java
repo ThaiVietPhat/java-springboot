@@ -1,15 +1,19 @@
 package com.example.demo.services;
 
+import com.example.demo.entities.Beer;
 import com.example.demo.mappers.BeerMapper;
-import com.example.demo.model.BeerDTO;
+import com.example.demo.models.BeerDTO;
+import com.example.demo.models.BeerStyle;
 import com.example.demo.repositories.BeerRepository;
+import com.example.demo.specifications.BeerSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,14 +23,24 @@ import java.util.UUID;
 public class BeerServiceJPA implements BeerService{
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
+    private final int DEFAULT_PAGE_SIZE = 25;
+    private final int DEFAULT_PAGE = 0;
     @Override
-    public List<BeerDTO> listBeers() {
-        return beerRepository.findAll()
-                .stream()
-                .map(beerMapper::beerToBeerDTO)
-                .toList();
-    }
+    public Page<BeerDTO> pageBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Pageable pageable) {
+        Specification<Beer> spec = Specification.where(BeerSpecification.hasName(beerName))
+                .and(BeerSpecification.hasStyle(beerStyle));
+        Page<Beer> beerPage = beerRepository.findAll(spec, pageable);
 
+        return beerPage.map(beer -> {
+            BeerDTO dto = beerMapper.beerToBeerDTO(beer);
+
+            if (Boolean.FALSE.equals(showInventory)) {
+                dto.setQuantityOnHand(null);
+            }
+
+            return dto;
+        });
+    }
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
         return beerRepository.findById(id)
@@ -42,12 +56,7 @@ public class BeerServiceJPA implements BeerService{
     @Override
     public Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beer) {
         return beerRepository.findById(beerId).map(foundBeer -> {
-            foundBeer.setBeerName(beer.getBeerName());
-            foundBeer.setPrice(beer.getPrice());
-            foundBeer.setUpc(beer.getUpc());
-            foundBeer.setBeerStyle(beer.getBeerStyle());
-            foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
-            foundBeer.setUpdatedDate(LocalDateTime.now());
+            beerMapper.updateBeerFromDto(beer, foundBeer);
             return beerMapper.beerToBeerDTO(beerRepository.save(foundBeer));
         });
 
@@ -71,7 +80,6 @@ public class BeerServiceJPA implements BeerService{
             if (beer.getQuantityOnHand() != null){
                 foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
             }
-            foundBeer.setUpdatedDate(LocalDateTime.now());
             return beerMapper.beerToBeerDTO(beerRepository.save(foundBeer));
         });
     }

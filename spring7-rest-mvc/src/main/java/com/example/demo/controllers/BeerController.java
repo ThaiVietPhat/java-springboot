@@ -1,15 +1,18 @@
 package com.example.demo.controllers;
 
-import com.example.demo.model.BeerDTO;
+import com.example.demo.models.BeerDTO;
+import com.example.demo.models.BeerStyle;
 import com.example.demo.services.BeerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -46,9 +49,11 @@ public class BeerController {
 	}
 
 	@GetMapping(BEER_PATH)
-	public List<BeerDTO> listBeers() {
-		log.debug("List Beers - in controller");
-		return beerService.listBeers();
+	public Page<BeerDTO> pageBeers(@RequestParam(required = false) String beerName,
+                                   @RequestParam(required = false) BeerStyle beerStyle,
+                                   @RequestParam(required = false, defaultValue = "false") Boolean showInventory,
+								   @PageableDefault(page = 0, size = 25, sort = "beerName") Pageable pageable){
+		return beerService.pageBeers(beerName, beerStyle, showInventory, pageable);
 	}
 
 	@GetMapping(BEER_PATH_ID)

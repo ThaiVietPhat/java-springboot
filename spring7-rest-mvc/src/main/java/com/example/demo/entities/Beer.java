@@ -1,6 +1,6 @@
 package com.example.demo.entities;
 
-import com.example.demo.model.BeerStyle;
+import com.example.demo.models.BeerStyle;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,7 +9,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
@@ -44,6 +46,8 @@ public class Beer {
     @NotNull
     @Column(nullable = false)
     private BigDecimal price;
+    @CreationTimestamp
     private LocalDateTime createdDate;
+    @UpdateTimestamp
     private LocalDateTime updatedDate;
 }

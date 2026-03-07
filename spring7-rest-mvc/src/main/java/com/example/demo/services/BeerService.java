@@ -1,13 +1,15 @@
 package com.example.demo.services;
 
-import com.example.demo.model.BeerDTO;
+import com.example.demo.models.BeerDTO;
+import com.example.demo.models.BeerStyle;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface BeerService {
-    List<BeerDTO> listBeers();
+    Page<BeerDTO> pageBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Pageable pageable);
     Optional<BeerDTO> getBeerById(UUID id);
 
     BeerDTO saveNewBeer(BeerDTO beer);

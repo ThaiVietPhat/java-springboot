@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.mappers.CustomerMapper;
-import com.example.demo.model.CustomerDTO;
+import com.example.demo.models.CustomerDTO;
 import com.example.demo.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;

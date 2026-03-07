@@ -1,8 +1,11 @@
 package com.example.demo.services;
 
-import com.example.demo.model.BeerDTO;
-import com.example.demo.model.BeerStyle;
+import com.example.demo.models.BeerDTO;
+import com.example.demo.models.BeerStyle;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -63,9 +66,9 @@ public class BeerServiceImpl implements BeerService {
     }
 
 	@Override
-	public List<BeerDTO> listBeers() {
+	public Page<BeerDTO> pageBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Pageable pageable) {
 		log.debug("Listing all beers - in service");
-		return new ArrayList<>(beerMap.values());
+		return new PageImpl<>(new ArrayList<>(beerMap.values()));
 	}
 
 

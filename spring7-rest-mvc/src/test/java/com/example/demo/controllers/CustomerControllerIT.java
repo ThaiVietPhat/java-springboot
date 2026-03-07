@@ -2,7 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.entities.Customer;
 import com.example.demo.mappers.CustomerMapper;
-import com.example.demo.model.CustomerDTO;
+import com.example.demo.models.CustomerDTO;
 import com.example.demo.repositories.CustomerRepository;
 import com.example.demo.services.CustomerService;
 import jakarta.transaction.Transactional;
