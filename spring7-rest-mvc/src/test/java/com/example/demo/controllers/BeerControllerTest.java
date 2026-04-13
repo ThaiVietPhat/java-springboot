@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.config.SpringSecConfig;
 import com.example.demo.models.BeerDTO;
 import com.example.demo.services.BeerService;
 import com.example.demo.services.BeerServiceImpl;
@@ -12,6 +13,7 @@ import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -28,13 +30,15 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(BeerController.class)
 @ExtendWith(MockitoExtension.class)
+@Import(SpringSecConfig.class)
 class BeerControllerTest {
-
+	private static final String USERNAME = "user";
+	private static final String PASSWORD = "password";
 	@Autowired
 	MockMvc mockMvc;
 
@@ -68,6 +72,7 @@ class BeerControllerTest {
 		beerMap.put("beerName", "New Name");
 
 		mockMvc.perform(patch(BeerController.BEER_PATH_ID, beer.getId())
+						.with(httpBasic(USERNAME, PASSWORD))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(beerMap)))
@@ -78,6 +83,8 @@ class BeerControllerTest {
 		assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
 		assertThat(beerMap.get("beerName")).isEqualTo(beerArgumentCaptor.getValue().getBeerName());
 	}
+
+
 
 	@Test
 	void testDeleteBeer() throws Exception {
