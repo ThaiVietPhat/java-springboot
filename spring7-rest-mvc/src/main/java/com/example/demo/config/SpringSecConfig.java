@@ -8,10 +8,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SpringSecConfig {
-
-    @Bean
+   @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> {
+                    // ✅ Đặt các rule cụ thể trước
+                    authorize.requestMatchers("/v3/api-docs", "/swagger-ui", "/swagger-ui.html")
+                            .permitAll();
+                    // ✅ anyRequest phải ở cuối cùng
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(httpSecurityOAuth2ResourceServerConfigurer -> {
@@ -20,5 +23,4 @@ public class SpringSecConfig {
 
         return http.build();
     }
-
 }

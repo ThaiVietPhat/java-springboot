@@ -7,6 +7,9 @@ import com.example.demo.models.BeerStyle;
 import com.example.demo.repositories.BeerRepository;
 import com.example.demo.specifications.BeerSpecification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Primary
 @RequiredArgsConstructor
@@ -25,8 +29,11 @@ public class BeerServiceJPA implements BeerService{
     private final BeerMapper beerMapper;
     private final int DEFAULT_PAGE_SIZE = 25;
     private final int DEFAULT_PAGE = 0;
+    private final CacheManager cacheManager;
     @Override
+    @Cacheable(cacheNames = "beerListCache")
     public Page<BeerDTO> pageBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Pageable pageable) {
+        log.info("Listing all beers - in service");
         Specification<Beer> spec = Specification.where(BeerSpecification.hasName(beerName))
                 .and(BeerSpecification.hasStyle(beerStyle));
         Page<Beer> beerPage = beerRepository.findAll(spec, pageable);
@@ -41,6 +48,7 @@ public class BeerServiceJPA implements BeerService{
             return dto;
         });
     }
+    @Cacheable(cacheNames = "beerCache", key = "#id")
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
         return beerRepository.findById(id)
@@ -83,9 +91,14 @@ public class BeerServiceJPA implements BeerService{
             return beerMapper.beerToBeerDTO(beerRepository.save(foundBeer));
         });
     }
-
+    /*@Caching(evict = {
+            @CacheEvict(cacheNames = "beerCache", key = "#beerId"),
+            @CacheEvict(cacheNames = "beerListCache")
+    })*/
     @Override
     public boolean deleteBeerById(UUID beerId) {
+        cacheManager.getCache("beerCache").evict(beerId);
+        cacheManager.getCache("beerListCache").clear();
         if (beerRepository.existsById(beerId)) {
             beerRepository.deleteById(beerId);
             return true;
