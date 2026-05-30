@@ -1,0 +1,17 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://auth-service:9000
+  cloud:
+    gateway:
+      routes:
+        - id: spring-6-rest-mvc
+          uri: http://beer-service:8080
+          predicates:
+            - Path=/api/v1/**
+        - id: spring7-auth-service
+          uri: http://auth-service:9000
+          predicates:
+            - Path=/oauth2/**

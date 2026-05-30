@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw clean *)",
+      "Bash(docker info *)",
+      "Bash(docker compose version *)",
+      "Bash(docker pull *)",
+      "Bash(docker context inspect *)",
+      "Bash(DOCKER_HOST=npipe:////./pipe/dockerDesktopLinuxEngine ./mvnw spring-boot:build-image *)",
+      "Bash(docker version *)",
+      "Bash(DOCKER_API_VERSION=1.40 ./mvnw spring-boot:build-image *)",
+      "WebSearch",
+      "Bash(curl -s \"https://search.maven.org/solrsearch/select?q=g:%22org.springframework.boot%22+AND+a:%22spring-boot-starter-parent%22&rows=1&wt=json\")",
+      "Bash(curl -s \"https://search.maven.org/solrsearch/select?q=g:%22org.springframework.cloud%22+AND+a:%22spring-cloud-dependencies%22+AND+v:%222025.0.%22&rows=5&wt=json\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(doc['v']\\) for doc in d['response']['docs']]\")",
+      "Bash(curl -s \"https://repo1.maven.org/maven2/org/springframework/cloud/spring-cloud-dependencies/maven-metadata.xml\")",
+      "Bash(./mvnw dependency:tree -Dincludes=spring-boot-buildpack-platform)",
+      "Read(//c/Users/m0tna/.m2/repository/org/springframework/boot/spring-boot-buildpack-platform/3.5.3/**)",
+      "Bash(jar tf *)",
+      "Bash(javap -classpath spring-boot-buildpack-platform-3.5.3.jar org.springframework.boot.buildpack.platform.docker.type.ApiVersion)",
+      "Bash(javap -classpath spring-boot-buildpack-platform-3.5.3.jar org.springframework.boot.buildpack.platform.docker.transport.HttpClientTransport)",
+      "Bash(javap -p -c -classpath spring-boot-buildpack-platform-3.5.3.jar org.springframework.boot.buildpack.platform.docker.DockerApi)",
+      "Bash(javap -p -c -classpath spring-boot-buildpack-platform-3.5.3.jar 'org.springframework.boot.buildpack.platform.docker.DockerApi$SystemApi')",
+      "Bash(javap -p -c -classpath spring-boot-buildpack-platform-3.5.3.jar 'org.springframework.boot.buildpack.platform.docker.DockerApi$ImageApi')",
+      "Bash(docker image *)",
+      "Bash(docker builder prune *)"
+    ]
+  }
+}

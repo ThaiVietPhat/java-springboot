@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1509
+      MYSQL_DATABASE: restdb
+      MYSQL_USER: m0tnamk09
+      MYSQL_PASSWORD: 1509
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+07:00
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - spring-network
+
+  # Auth Service
+  auth-service:
+    image: spring7-auth-server:latest
+    container_name: auth-service
+    ports:
+      - "9000:9000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mysql-db
+    networks:
+      - spring-network
+
+  # Beer Service
+  beer-service:
+    image: beer-service:latest
+    container_name: beer-service
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mysql-db
+      - auth-service
+    networks:
+      - spring-network
+
+  # Gateway
+  gateway:
+    image: spring-7-gateway:latest
+    container_name: spring-7-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - auth-service
+      - beer-service
+    networks:
+      - spring-network
+
+volumes:
+  mysql-data:
+
+networks:
+  spring-network:
+    driver: bridge

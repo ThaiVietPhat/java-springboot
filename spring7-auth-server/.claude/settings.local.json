@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker rmi *)",
+      "Bash(mvn clean *)",
+      "Bash(docker build *)"
+    ]
+  }
+}

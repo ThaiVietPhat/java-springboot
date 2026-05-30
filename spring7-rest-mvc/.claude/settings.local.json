@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker rmi *)",
+      "Bash(docker image prune *)",
+      "Bash(mvn clean *)",
+      "Bash(docker build *)",
+      "Bash(jar tf *)"
+    ]
+  }
+}
