@@ -1,13 +1,23 @@
 spring:
   application:
     name: spring-security
-  security:
-    user:
-      name: ${SECURITY_USERNAME:123}
-      password: ${SECURITY_PASSWORD:123}
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/security}
+    username: ${POSTGRES_USERNAME:security}
+    password: ${POSTGRES_PASSWORD:security}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
 
 logging:
   level:
     org:
       springframework:
         security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}
+
+server:
+  servlet:
+    session:
+      timeout: ${SESSION_TIMEOUT:20m}
