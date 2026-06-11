@@ -1,6 +1,11 @@
-drop table `authorities`;
-drop table `users`;
-drop table `customer`;
+
+CREATE DATABASE IF NOT EXISTS `eazybank`;
+
+CREATE USER IF NOT EXISTS 'security2'@'localhost' IDENTIFIED BY 'security2';
+ALTER USER 'security2'@'localhost' IDENTIFIED BY 'security2';
+GRANT ALL PRIVILEGES ON `eazybank`.* TO 'security2'@'localhost';
+
+USE `eazybank`;
 
 CREATE TABLE `customer` (
   `customer_id` int NOT NULL AUTO_INCREMENT,
@@ -183,10 +188,3 @@ INSERT INTO `authorities` (`customer_id`, `name`)
  INSERT INTO `authorities` (`customer_id`, `name`)
    VALUES (1, 'VIEWBALANCE');
 
-DELETE FROM `authorities`;
-
- INSERT INTO `authorities` (`customer_id`, `name`)
-  VALUES (1, 'ROLE_USER');
-
- INSERT INTO `authorities` (`customer_id`, `name`)
-  VALUES (1, 'ROLE_ADMIN');
