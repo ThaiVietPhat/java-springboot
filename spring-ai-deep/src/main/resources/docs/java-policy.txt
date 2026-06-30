@@ -1,0 +1,6 @@
+Chính sách lập trình Java nội bộ công ty ABC:
+- Tất cả class phải có unit test với coverage tối thiểu 80%.
+- Không được dùng System.out.println, phải dùng SLF4J Logger.
+- Mọi REST API phải có Swagger documentation.
+- Tên biến phải dùng camelCase, tên class dùng PascalCase.
+- Không được commit code khi có lỗi SonarQube Critical trở lên.

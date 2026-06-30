@@ -1,10 +1,8 @@
 spring:
   ai:
-    google:
-      genai:
-        api-key: YOUR_API_KEY_HERE
     openai:
-      api-key: YOUR_GROQ_OR_LLAMA_API_KEY_HERE
-      base-url: https://api.groq.com/openai
+      api-key: sk-e11d8343872b4b269b0a836c7c917f89
+      base-url: https://api.deepseek.com
       chat:
-        model: llama3-8b-8192
+        options:
+          model: deepseek-chat
